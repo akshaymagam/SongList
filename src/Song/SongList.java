@@ -6,6 +6,7 @@ import java.util.*;
 public class SongList{
 
     private final Map<Integer,Song> songlist;
+    private int counter = 0;
 
     public SongList() {
         songlist = new HashMap<>();
@@ -38,18 +39,23 @@ public class SongList{
     }
 
     public void add(Song newsong){
-        songlist.put(songlist.size() + 1, newsong);
+        songlist.put(counter++, newsong);
     }
 
-    /*public Song find(Song target){
-        for(Song temp : songlist){
-            if(!target.getName().equals(temp.getName())) continue;
-            if(!target.getArtist().equals())
-
+    public Integer find(Song target){
+        Set <Integer> songListkeys = songlist.keySet();
+        for(Integer temp: songListkeys){
+            Song tempsong = songlist.get(temp);
+            if(!target.getName().equals(tempsong.getName())) continue;
+            if(!target.getArtist().equals(tempsong.getArtist())) continue;
+            if(!target.getAlbum().equals(tempsong.getAlbum())) continue;
+            if(!(target.getYear() == tempsong.getYear())) continue;
+            return temp;
         }
+        return null;
     }
 
-    public void edit(Song current){
+    /*public void edit() {
 
     }*/
 }
