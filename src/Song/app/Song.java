@@ -1,4 +1,4 @@
-package Song;
+package Song.app;
 
 public class Song{
 
