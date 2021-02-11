@@ -11,7 +11,7 @@ public class SongList{
         songlist = new HashMap<>();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) { //test main
         SongList test = new SongList();
         Song song1 = new Song("a", "a", "a", 1999);
         Song song2 = new Song("ab","b","b",1999);
