@@ -33,6 +33,10 @@
             <Text layoutX="39.0" layoutY="103.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Album:" />
             <Text layoutX="42.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Artist:" />
             <Text layoutX="44.0" layoutY="126.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Year:" />
+            <Text layoutX="94.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+            <Text layoutX="94.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+            <Text layoutX="94.0" layoutY="103.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+            <Text layoutX="94.0" layoutY="126.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
          </children></AnchorPane>
   </items>
 </SplitPane>
