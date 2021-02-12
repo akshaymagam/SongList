@@ -1,5 +1,6 @@
 package Song.app;
 
+
 import java.util.*;
 
 public class SongList{
@@ -11,21 +12,21 @@ public class SongList{
         songlist = new HashMap<>();
     }
 
-    public static void main(String[] args) { //test main
-        SongList test = new SongList();
-        Song song1 = new Song("a", "a", "a", 1999);
-        Song song2 = new Song("ab","b","b",1999);
-        Song song3 = new Song("b","b","b",1999);
-        Song song4 = new Song("bb","b","b",1999);
-        test.add(song1);
-        test.add(song2);
-        test.add(song3);
-        test.add(song4);
-        List<Song> output = test.getSonglist();
-        for(Song temp: output){
-            System.out.println(temp.toString());
-        }
-    }
+//    public static void main(String[] args) { //test main
+//        SongList test = new SongList();
+//        Song song1 = new Song("a", "a", "a", 1999);
+//        Song song2 = new Song("ab","b","b",1999);
+//        Song song3 = new Song("b","b","b",1999);
+//        Song song4 = new Song("bb","b","b",1999);
+//        test.add(song1);
+//        test.add(song2);
+//        test.add(song3);
+//        test.add(song4);
+//        List<Song> output = test.getSonglist();
+//        for(Song temp: output){
+//            System.out.println(temp.toString());
+//        }
+//    }
 
     public List<Song> getSonglist() {
         Set <Integer> songListkeys = songlist.keySet();
