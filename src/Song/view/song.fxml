@@ -16,7 +16,7 @@
          </children></AnchorPane>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="169.0">
          <children>
-            <Button fx:id="add" layoutX="72.0" layoutY="344.0" mnemonicParsing="false" onAction="#addButtonPushed" prefHeight="25.0" prefWidth="83.0" text="Add..." />
+            <Button fx:id="add" layoutX="72.0" layoutY="344.0" mnemonicParsing="false" onAction="#addButton" prefHeight="25.0" prefWidth="83.0" text="Add..." />
             <Button fx:id="edit" layoutX="185.0" layoutY="344.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="83.0" text="Edit..." />
             <Button fx:id="delete" layoutX="303.0" layoutY="344.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="83.0" text="Delete..." />
             <Label layoutX="77.0" layoutY="176.0" text="Name" />
