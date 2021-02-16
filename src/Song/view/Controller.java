@@ -1,15 +1,10 @@
 package Song.view;
 
 import Song.app.Song;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.control.SelectionMode;
+import javafx.scene.control.*;
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.collections.FXCollections;
@@ -27,29 +22,29 @@ import java.util.ArrayList;
 
 public class Controller {
     //add editable objects
-    @FXML Button add;
-    @FXML Button edit;
-    @FXML Button delete;
+    @FXML Button addButton;
+    @FXML Button editButton;
+    @FXML Button deleteButton;
     @FXML Text selectedname;
     @FXML Text selectedartist;
     @FXML Text selectedalbum;
     @FXML Text selectedyear;
-    @FXML ListView<Song> songlist;
+    @FXML ListView<Song> listView;
     @FXML TextField nameinput;
     @FXML TextField artistinput;
     @FXML TextField albuminput;
     @FXML TextField yearinput;
 
 
-
+//I Commmented some thoughts on the code, please do not take this personally lol, it is just some ideas that I thought would make the code work more efficiently.
     private ObservableList<Song> obsList;
-    ListView<Song> listView;
     private int selectedIndex;
     private File songLibrary;
+    private ArrayList<Song> libList; //this doesn't need to be passed in, it is a global variable. we need to pass in the song objects into the methods, and reduce the number of arguments to avoid confusion.
 
     public void start(final Stage primaryStage) throws FileNotFoundException {
         songLibrary = new File("songLibrary.txt");
-        ArrayList<Song> libList = FileConvert.read(songLibrary);
+        libList = FileConvert.read(songLibrary);
 
         for(Song x : libList){
             listView.getItems().add(x);
@@ -84,7 +79,7 @@ public class Controller {
 
         add.setOnAction(event);*/
 
-        add.setOnAction(e -> add(listView, libList));
+        addButton.setOnAction(e -> add(listView, libList));
         editButton(libList);
         deleteButton(libList);
 
@@ -96,28 +91,65 @@ public class Controller {
         listView.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);
     }
 
-    public void addButton(ActionEvent event){
+    public void addButtonPushed(ActionEvent event){
         System.out.println("add");
-        Song newSong = new Song();
-        newSong.setName(nameinput.getText());
-        newSong.setArtist(artistinput.getText());
-        if(albuminput.getText() != null) {newSong.setAlbum(albuminput.getText());}
-        if(yearinput.getText() !=null) {newSong.setYear(yearinput.getText());}
-        System.out.println(newSong);
+
+        if(artistinput.getText().isEmpty() || nameinput.getText().isEmpty()){
+            Alert artistorname = new Alert(AlertType.ERROR);
+            artistorname.setContentText("Please enter a name and/or artist.");
+            artistorname.showAndWait();
+        }
+        Alert confirm = new Alert(AlertType.CONFIRMATION, "add " + nameinput.getText() + " by " + artistinput.getText() + "?", ButtonType.OK, ButtonType.CANCEL);
+        confirm.showAndWait();
+
+        if(confirm.getResult() == ButtonType.OK){
+            Song newSong = new Song();
+            newSong.setName(nameinput.getText());
+            newSong.setArtist(artistinput.getText());
+            if(!albuminput.getText().isEmpty()) {newSong.setAlbum(albuminput.getText());}
+            if(!yearinput.getText().isEmpty()) {newSong.setYear((yearinput.getText()));}
+            System.out.println(newSong);
+        }
+
+
+
+
+
     }
 
-    private void add(final ListView<Song> listView, final ArrayList<Song> libList) {
+//    public void editButtonPushed(ActionEvent event, Song selected){
+//        selected.setName(nameinput.getText());
+//        selected.setArtist(artistinput.getText());
+//        selected.setAlbum(albuminput.getText());
+//        selected.setYear(Integer.parseInt(yearinput.getText()));
+//        System.out.println(newSong);
+//
+//
+//    }
+//
+//    public void editButtonPushed(ActionEvent event, ){
+//        Song newSong = new Song();
+//        newSong.setName(nameinput.getText());
+//        newSong.setArtist(artistinput.getText());
+//        newSong.setAlbum(albuminput.getText());
+//        newSong.setYear(Integer.parseInt(yearinput.getText()));
+//        System.out.println(newSong);
+//
+//
+//    }
+
+    private void add(final ListView<Song> listView, final ArrayList<Song> libList) { //we should separate JavaFX methods and pull data from GUI First, then pass into this method once it is validated from the JavaFx functions. ListView can also be removed from arguments since it is a global variable.
         System.out.println("add");
-        if(nameinput.equals("") || artistinput.equals("")) {
+        if(nameinput.equals("") || artistinput.equals("")) { //can be handled for frontend method
             //send error message
             return;
         }
 
-        Song newEntry = new Song(nameinput.getText(), artistinput.getText(), albuminput.getText(), yearinput.getText());
+        Song newEntry = new Song(nameinput.getText(), artistinput.getText(), albuminput.getText(), yearinput.getText()); //this should be front end
         if (libList.size() == 0) {
             selectedIndex = 0;
             libList.add(newEntry);
-        } else {
+        } else { //for comparing, you can implement ArrayList.sort, as it is an easier method to use instead of writing it all out.
             int ind;
             for (ind = 0; ind < libList.size(); ind++) {
                 Song curEntry = libList.get(ind);
@@ -168,9 +200,9 @@ public class Controller {
         FileConvert.save(libList, songLibrary);
     }
 
-    private void editButton(ArrayList<Song> libList) {
+    private void editButton(ArrayList<Song> libList) { //should become an Eventhandler method, then call the backend.
         System.out.println("edit");
-        edit.setOnAction(f -> {
+        editButton.setOnAction(f -> {
             if(!libList.isEmpty()) {
                 edit(listView, libList, nameinput.getText(), artistinput.getText(), albuminput.getText(), yearinput.getText());
             }
@@ -179,7 +211,7 @@ public class Controller {
 
     private void edit(final ListView<Song> listView, final ArrayList<Song> libList, final String song, final String artist, final String album, final String year) {
         System.out.println("edit");
-        if(song.equals("") || artist.equals("")) {
+        if(song.equals("") || artist.equals("")) { // should be handled in front end
             return;
         }
 
@@ -194,16 +226,16 @@ public class Controller {
         add(listView, libList);
     }
 
-    private void deleteButton(ArrayList<Song> libList) {
+    private void deleteButton(ArrayList<Song> libList) { //frontend javaFx code only, use Eventhandler here
         System.out.println("delete");
-        delete.setOnAction(g -> {
+        deleteButton.setOnAction(g -> {
             if (!libList.isEmpty()) {
                 delete(listView, libList);
             }
         });
     }
 
-    private void delete(final ListView<Song> listView, final ArrayList<Song> libList) {
+    private void delete(final ListView<Song> listView, final ArrayList<Song> libList) { //convert to backend once the JavaFX method is created.
         System.out.println("delete");
         libList.remove(selectedIndex);
         listView.getItems().clear();

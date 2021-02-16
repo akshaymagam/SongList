@@ -12,13 +12,13 @@
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="129.0">
          <children>
-            <ListView fx:id="songlist" layoutX="7.0" layoutY="9.0" prefHeight="380.0" prefWidth="274.0" AnchorPane.bottomAnchor="9.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="9.0" />
+            <ListView fx:id="listView" layoutX="7.0" layoutY="9.0" prefHeight="380.0" prefWidth="274.0" AnchorPane.bottomAnchor="9.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="9.0" />
          </children></AnchorPane>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="169.0">
          <children>
             <Button fx:id="add" layoutX="72.0" layoutY="344.0" mnemonicParsing="false" onAction="#addButtonPushed" prefHeight="25.0" prefWidth="83.0" text="Add..." />
-            <Button fx:id="edit" layoutX="185.0" layoutY="344.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="83.0" text="Edit..." />
-            <Button fx:id="delete" layoutX="303.0" layoutY="344.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="83.0" text="Delete..." />
+            <Button fx:id="editButton" layoutX="185.0" layoutY="344.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="83.0" text="Edit..." />
+            <Button fx:id="deleteButton" layoutX="303.0" layoutY="344.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="83.0" text="Delete..." />
             <Label layoutX="77.0" layoutY="176.0" text="Name" />
             <Label layoutX="79.0" layoutY="218.0" text="Artist" />
             <Label layoutX="76.0" layoutY="262.0" text="Album" />
@@ -29,14 +29,10 @@
             <TextField fx:id="yearinput" layoutX="141.0" layoutY="300.0" prefHeight="25.0" prefWidth="228.0" />
             <Text layoutX="42.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Selected Song:" />
             <Text layoutX="42.0" layoutY="161.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Add/Edit Song" />
-            <Text layoutX="41.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" />
-            <Text layoutX="39.0" layoutY="103.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Album:" />
-            <Text layoutX="42.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Artist:" />
-            <Text layoutX="44.0" layoutY="126.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Year:" />
-            <Text fx:id="selectedname" layoutX="94.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text=" Text2" />
-            <Text fx:id="selectedartist" layoutX="94.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-            <Text fx:id="selectedalbum" layoutX="94.0" layoutY="103.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-            <Text fx:id="selectedyear" layoutX="94.0" layoutY="126.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+            <Text fx:id="selectedname" layoutX="41.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" />
+            <Text fx:id="selectedalbum" layoutX="39.0" layoutY="103.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Album:" />
+            <Text fx:id="selectedartist" layoutX="42.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Artist:" />
+            <Text fx:id="selectedyear" layoutX="44.0" layoutY="126.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Year:" />
          </children></AnchorPane>
   </items>
 </SplitPane>
