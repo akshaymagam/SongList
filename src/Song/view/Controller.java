@@ -17,7 +17,7 @@ import javafx.event.EventHandler;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
+import java.util.*;
 
 
 public class Controller {
@@ -72,6 +72,15 @@ public class Controller {
         listView.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);
     }
 
+    public static boolean isNumeric(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch(NumberFormatException e){
+            return false;
+        }
+    }
+
     public void addButtonPushed(ActionEvent event){
 
         if(artistinput.getText().isEmpty() || nameinput.getText().isEmpty()){
@@ -81,7 +90,7 @@ public class Controller {
             return;
         }
 
-        if(!yearinput.getText().isEmpty() && Integer.parseInt(yearinput.getText()) < 0){
+        if(!yearinput.getText().isEmpty() && isNumeric(yearinput.getText()) && Integer.parseInt(yearinput.getText()) < 0){
             Alert year = new Alert(AlertType.ERROR);
             year.setContentText("Please enter a valid year.");
             year.showAndWait();
@@ -216,7 +225,8 @@ public class Controller {
     public void deleteButtonPushed(ActionEvent event) {
         selectedIndex = listView.getSelectionModel().getSelectedIndex();
         if(selectedIndex < 0){
-            //throw error;
+            Alert error = new Alert(AlertType.ERROR, "No songs to delete!");
+            error.showAndWait();
             System.out.println("ERROR");
         }else {
             selectedname.setText(libList.get(selectedIndex).getName());
