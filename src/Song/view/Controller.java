@@ -49,12 +49,11 @@ public class Controller {
             listView.getItems().add(x);
         }
 
-        listView.getSelectionModel().clearSelection();
-        listView.getSelectionModel().selectFirst();
-        selectedIndex = 0;
-
+        listView.getSelectionModel().select(0);
         selectSong();
+        listView.getSelectionModel().selectedIndexProperty().addListener((obs, oldVal, newVal) -> selectSong()); // temporary listener for ListView
 
+        /*
         EventHandler<MouseEvent> eventHandler = e -> {
             selectSong();
             selectedIndex = listView.getSelectionModel().getSelectedIndex();
@@ -63,18 +62,17 @@ public class Controller {
             selectedalbum.setText(libList.get(selectedIndex).getAlbum());
             selectedyear.setText(libList.get(selectedIndex).getYear());
         };
+         */
 
-        nameinput.clear();
-        artistinput.clear();
-        albuminput.clear();
-        yearinput.clear();
 
-        listView.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);
+//        listView.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);
     }
 
-    public static boolean isNumeric(String str) {
+    public static boolean validYear(String str) {
         try {
-            Double.parseDouble(str);
+            if(Integer.parseInt(str) <0){
+                return false;
+            }
             return true;
         } catch(NumberFormatException e){
             return false;
@@ -90,7 +88,7 @@ public class Controller {
             return;
         }
 
-        if(!yearinput.getText().isEmpty() && isNumeric(yearinput.getText()) && Integer.parseInt(yearinput.getText()) < 0){
+        if(!yearinput.getText().isEmpty() && !validYear(yearinput.getText())){
             Alert year = new Alert(AlertType.ERROR);
             year.setContentText("Please enter a valid year.");
             year.showAndWait();
@@ -109,6 +107,11 @@ public class Controller {
             System.out.println(newSong);
             add(newSong);
         }
+
+        nameinput.clear();
+        artistinput.clear();
+        albuminput.clear();
+        yearinput.clear();
 
     }
 
@@ -175,6 +178,12 @@ public class Controller {
         }
     }
 
+    /**
+     * Bugs with Edit():
+     * (1) You shouldnt be able to enter a song in the text field and be able to edit it. The song should be selected from ListView, and then potentially edited.
+     * (2) After user submits song to edit, it should be checked to see if that song already exsits in the library.
+     */
+
     public void editButtonPushed(ActionEvent event) {
         if(artistinput.getText().isEmpty() || nameinput.getText().isEmpty()){
             Alert artistorname = new Alert(AlertType.ERROR);
@@ -183,14 +192,14 @@ public class Controller {
             return;
         }
 
-        if(!yearinput.getText().isEmpty() && Integer.parseInt(yearinput.getText()) < 0){
+        if(!yearinput.getText().isEmpty() && !validYear(yearinput.getText())){
             Alert year = new Alert(AlertType.ERROR);
             year.setContentText("Please enter a valid year.");
             year.showAndWait();
             return;
         }
 
-        Alert confirm = new Alert(AlertType.CONFIRMATION, "Edit " + nameinput.getText() + " by " + artistinput.getText() + "?", ButtonType.OK, ButtonType.CANCEL);
+        Alert confirm = new Alert(AlertType.CONFIRMATION, "Edit " + listView.getSelectionModel().getSelectedItem().getName() + " by " + listView.getSelectionModel().getSelectedItem().getArtist() + "?", ButtonType.OK, ButtonType.CANCEL);
         confirm.showAndWait();
 
         if(confirm.getResult() == ButtonType.OK){
@@ -241,6 +250,12 @@ public class Controller {
         }
     }
 
+    /**
+     * Bugs with Delete()
+     * To reproduce issue: Insert one song with name and artist. Then try to delete it. The "Selected Song" section will still include the previously
+     * deleted songs details. Now, click delete again and notice that it prompts you to delete the preivous song again. This then crashes the program with an IndexException.
+     */
+
     private void delete() {
         System.out.println("delete");
         libList.remove(selectedIndex);
@@ -266,12 +281,19 @@ public class Controller {
         }
     }
 
-    private void selectSong() {
-        if (listView.getSelectionModel().getSelectedItem() != null) {
+    public void selectSong() { //need a listener for selected song to update
+        Song selectedSong = listView.getSelectionModel().getSelectedItem();
+
+        if (selectedSong != null) {
             selectedname.setText(listView.getSelectionModel().getSelectedItem().getName());
             selectedartist.setText(listView.getSelectionModel().getSelectedItem().getArtist());
             selectedalbum.setText(listView.getSelectionModel().getSelectedItem().getAlbum());
             selectedyear.setText(listView.getSelectionModel().getSelectedItem().getYear());
+
+            nameinput.setText(listView.getSelectionModel().getSelectedItem().getName());
+            artistinput.setText(listView.getSelectionModel().getSelectedItem().getArtist());
+            albuminput.setText(listView.getSelectionModel().getSelectedItem().getAlbum());
+            yearinput.setText(listView.getSelectionModel().getSelectedItem().getYear());
         }
     }
 }

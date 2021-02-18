@@ -2,6 +2,7 @@ package Song.app;
 
 
 import javafx.application.Application;
+import Song.view.Controller;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -16,9 +17,15 @@ public class SongLib extends Application {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/Song/view/song.fxml"));
         SplitPane root = (SplitPane) loader.load();
+
+        Controller controller = loader.getController();
+        controller.start(primaryStage);
+
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
         primaryStage.show();
+
 
     }
 
