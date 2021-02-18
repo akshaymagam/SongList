@@ -1,120 +1,109 @@
+/*
+* Kruti Shah(ks1511)
+* Akshay Magam(akm152)
+*/
+
 package Song.view;
 
 import Song.app.Song;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.control.SelectionMode;
+import javafx.scene.control.*;
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import javafx.scene.input.MouseEvent;
-import javafx.event.EventHandler;
-
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-
+import java.util.*;
 
 public class Controller {
     //add editable objects
-    @FXML Button add;
-    @FXML Button edit;
-    @FXML Button delete;
+    @FXML Button addButton;
+    @FXML Button editButton;
+    @FXML Button deleteButton;
     @FXML Text selectedname;
     @FXML Text selectedartist;
     @FXML Text selectedalbum;
     @FXML Text selectedyear;
-    @FXML ListView<Song> songlist;
+    @FXML ListView<Song> listView;
     @FXML TextField nameinput;
     @FXML TextField artistinput;
     @FXML TextField albuminput;
     @FXML TextField yearinput;
 
 
-
-    private ObservableList<Song> obsList;
-    ListView<Song> listView;
+    //private ObservableList<Song> obsList;
     private int selectedIndex;
     private File songLibrary;
+    private ArrayList<Song> libList;
 
     public void start(final Stage primaryStage) throws FileNotFoundException {
         songLibrary = new File("songLibrary.txt");
-        ArrayList<Song> libList = FileConvert.read(songLibrary);
+        libList = FileConvert.read(songLibrary);
 
         for(Song x : libList){
             listView.getItems().add(x);
         }
-        //listView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
-        listView.getSelectionModel().clearSelection();
-        listView.getSelectionModel().selectFirst();
-        selectedIndex = 0;
+        listView.getSelectionModel().select(0);
+        selectSong();
+        listView.getSelectionModel().selectedIndexProperty().addListener((obs, oldVal, newVal) -> selectSong()); // temporary listener for ListView
+    }
 
-        selectSong(listView);
-
-        EventHandler<MouseEvent> eventHandler = e -> {
-            selectSong(listView);
-            selectedIndex = listView.getSelectionModel().getSelectedIndex();
-            selectedname.setText(libList.get(selectedIndex).getName());
-            selectedartist.setText(libList.get(selectedIndex).getArtist());
-            selectedalbum.setText(libList.get(selectedIndex).getAlbum());
-            selectedyear.setText(libList.get(selectedIndex).getYear());
-
-            editButton(libList);
-            deleteButton(libList);
-        };
-
-        /* EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent e)
-            {
-                add(listView, libList);
-                System.out.println("Added it!");
+    public static boolean validYear(String str) {
+        try {
+            if(Integer.parseInt(str) <0){
+                return false;
             }
-        };
-
-        add.setOnAction(event);*/
-
-        add.setOnAction(e -> add(listView, libList));
-        editButton(libList);
-        deleteButton(libList);
-
-        nameinput.clear();
-        artistinput.clear();
-        albuminput.clear();
-        yearinput.clear();
-
-        listView.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);
+            return true;
+        } catch(NumberFormatException e){
+            return false;
+        }
     }
 
-    public void addButton(ActionEvent event){
-        System.out.println("add");
-        Song newSong = new Song();
-        newSong.setName(nameinput.getText());
-        newSong.setArtist(artistinput.getText());
-        if(albuminput.getText() != null) {newSong.setAlbum(albuminput.getText());}
-        if(yearinput.getText() !=null) {newSong.setYear(yearinput.getText());}
-        System.out.println(newSong);
+    public static boolean validNameArtist(String name, String artist){
+        if(artist.isEmpty() || name.isEmpty()){
+            Alert artistorname = new Alert(AlertType.ERROR);
+            artistorname.setContentText("Please enter a name and/or artist.");
+            artistorname.showAndWait();
+            return false;
+        }
+        return true;
     }
 
-    private void add(final ListView<Song> listView, final ArrayList<Song> libList) {
-        System.out.println("add");
-        if(nameinput.equals("") || artistinput.equals("")) {
-            //send error message
+    public void addButtonPushed(ActionEvent event){
+
+        if(!validNameArtist(artistinput.getText(), nameinput.getText())){
             return;
         }
 
-        Song newEntry = new Song(nameinput.getText(), artistinput.getText(), albuminput.getText(), yearinput.getText());
-        if (libList.size() == 0) {
+        if(!yearinput.getText().isEmpty() && !validYear(yearinput.getText())){
+            Alert year = new Alert(AlertType.ERROR);
+            year.setContentText("Please enter a valid year.");
+            year.showAndWait();
+            return;
+        }
+
+        Alert confirm = new Alert(AlertType.CONFIRMATION, "Add " + nameinput.getText() + " by " + artistinput.getText() + "?", ButtonType.OK, ButtonType.CANCEL);
+        confirm.showAndWait();
+
+        if(confirm.getResult() == ButtonType.OK){
+            Song newSong = new Song();
+            newSong.setName(nameinput.getText());
+            newSong.setArtist(artistinput.getText());
+            if(!albuminput.getText().isEmpty()) {newSong.setAlbum(albuminput.getText());}
+            if(!yearinput.getText().isEmpty()) {newSong.setYear((yearinput.getText()));}
+            //System.out.println(newSong);
+            add(newSong);
+        }
+    }
+
+    private void add(Song newEntry) {
+        if (libList == null) {
+            libList = new ArrayList<>();
+        }
+        if(libList.size() == 0){
             selectedIndex = 0;
             libList.add(newEntry);
         } else {
@@ -141,7 +130,9 @@ public class Controller {
                         check = false;
                         break;
                     } else if (newEntry.getArtist().toLowerCase().compareTo(libList.get(ind).getArtist().toLowerCase()) == 0){
-                        //Error
+                        Alert repeat = new Alert(AlertType.ERROR);
+                        repeat.setContentText("Already in your List.");
+                        repeat.showAndWait();
                         return;
                     } else if(ind == libList.size() - 1) {
                         libList.add(newEntry);
@@ -157,6 +148,7 @@ public class Controller {
                 }
             }
         }
+        selectSong();
 
         listView.getItems().clear();
         for(Song x : libList){
@@ -164,47 +156,76 @@ public class Controller {
         }
 
         listView.getSelectionModel().select(selectedIndex);
-        selectSong(listView);
-        FileConvert.save(libList, songLibrary);
+        selectSong();
+        if(songLibrary != null) {
+            FileConvert.save(libList, songLibrary);
+        }
     }
 
-    private void editButton(ArrayList<Song> libList) {
-        System.out.println("edit");
-        edit.setOnAction(f -> {
-            if(!libList.isEmpty()) {
-                edit(listView, libList, nameinput.getText(), artistinput.getText(), albuminput.getText(), yearinput.getText());
-            }
-        });
-    }
 
-    private void edit(final ListView<Song> listView, final ArrayList<Song> libList, final String song, final String artist, final String album, final String year) {
-        System.out.println("edit");
-        if(song.equals("") || artist.equals("")) {
+    public void editButtonPushed(ActionEvent event) {
+        if(!validNameArtist(artistinput.getText(), nameinput.getText())){
             return;
         }
 
-        for (int index = 0; index < libList.size(); index++) {
-            Song entry = libList.get(index);
-            if(entry.getName().compareTo(song) == 0 && entry.getArtist().compareTo(artist) == 0 && index != selectedIndex) {
-                return;
+        if(!yearinput.getText().isEmpty() && !validYear(yearinput.getText())){
+            Alert year = new Alert(AlertType.ERROR);
+            year.setContentText("Please enter a valid year.");
+            year.showAndWait();
+            return;
+        }
+
+        Alert confirm = new Alert(AlertType.CONFIRMATION, "Edit " + listView.getSelectionModel().getSelectedItem().getName() + " by " + listView.getSelectionModel().getSelectedItem().getArtist() + "?", ButtonType.OK, ButtonType.CANCEL);
+        confirm.showAndWait();
+
+        if(confirm.getResult() == ButtonType.OK){
+            Song currSong = new Song(nameinput.getText(), artistinput.getText(), albuminput.getText(), yearinput.getText());
+            edit(currSong);
+        }
+    }
+
+    private void edit(Song Entry) {
+        for (int x = 0; x < libList.size(); x++) {
+            Song curr = libList.get(x);
+            if(Entry.getName().compareToIgnoreCase(curr.getName()) ==0 && Entry.getArtist().compareToIgnoreCase(curr.getArtist()) == 0) {
+                if(!Entry.getYear().isEmpty() || !Entry.getAlbum().isEmpty()){
+                    curr.setYear(Entry.getYear());
+                    curr.setAlbum(Entry.getAlbum());
+                }else {
+                    Alert invalid = new Alert(AlertType.ERROR);
+                    invalid.setContentText("This action cannot be done. This song already exists.");
+                    invalid.showAndWait();
+                    return;
+                }
             }
         }
 
-        delete(listView, libList);
-        add(listView, libList);
+        selectedIndex = listView.getSelectionModel().getSelectedIndex();
+        delete();
+        add(Entry);
     }
 
-    private void deleteButton(ArrayList<Song> libList) {
-        System.out.println("delete");
-        delete.setOnAction(g -> {
-            if (!libList.isEmpty()) {
-                delete(listView, libList);
-            }
-        });
+    public void deleteButtonPushed(ActionEvent event) {
+        selectedIndex = listView.getSelectionModel().getSelectedIndex();
+        if(selectedIndex < 0){
+            Alert error = new Alert(AlertType.ERROR, "No songs to delete!");
+            error.showAndWait();
+            return;
+        }else {
+            selectedname.setText(libList.get(selectedIndex).getName());
+            selectedartist.setText(libList.get(selectedIndex).getArtist());
+        }
+
+        Alert confirm = new Alert(AlertType.CONFIRMATION, "Delete " + selectedname.getText() + " by " + selectedartist.getText() + "?", ButtonType.OK, ButtonType.CANCEL);
+        confirm.showAndWait();
+
+        if(confirm.getResult() == ButtonType.OK){
+            delete();
+        }
     }
 
-    private void delete(final ListView<Song> listView, final ArrayList<Song> libList) {
-        System.out.println("delete");
+
+    private void delete() {
         libList.remove(selectedIndex);
         listView.getItems().clear();
 
@@ -214,24 +235,42 @@ public class Controller {
 
         if(libList.size() > selectedIndex) {
             listView.getSelectionModel().select(selectedIndex);
-            selectSong(listView);
+            selectSong();
         } else if(libList.size() == selectedIndex) {
             selectedIndex = selectedIndex - 1;
             listView.getSelectionModel().select(selectedIndex);
-            selectSong(listView);
+            selectSong();
         } else if(libList.size() == 0) {
-            selectSong(listView);
+            selectSong();
         }
 
-        FileConvert.save(libList, songLibrary);
+        if(songLibrary != null) {
+            FileConvert.save(libList, songLibrary);
+        }
     }
 
-    private void selectSong(final ListView<Song> listView) {
-        if (listView.getSelectionModel().getSelectedItem() != null) {
+    public void selectSong() {
+        Song selectedSong = listView.getSelectionModel().getSelectedItem();
+        if (selectedSong != null) {
             selectedname.setText(listView.getSelectionModel().getSelectedItem().getName());
             selectedartist.setText(listView.getSelectionModel().getSelectedItem().getArtist());
             selectedalbum.setText(listView.getSelectionModel().getSelectedItem().getAlbum());
             selectedyear.setText(listView.getSelectionModel().getSelectedItem().getYear());
+
+            nameinput.setText(selectedname.getText());
+            artistinput.setText(listView.getSelectionModel().getSelectedItem().getArtist());
+            albuminput.setText(listView.getSelectionModel().getSelectedItem().getAlbum());
+            yearinput.setText(listView.getSelectionModel().getSelectedItem().getYear());
+        }else{
+            selectedname.setText("(none selected)");
+            selectedartist.setText("(none selected)");
+            selectedalbum.setText("(none selected)");
+            selectedyear.setText("(none selected)");
+
+            nameinput.setText("");
+            artistinput.setText("");
+            albuminput.setText("");
+            yearinput.setText("");
         }
     }
 }

@@ -1,3 +1,8 @@
+/*
+ * Kruti Shah(ks1511)
+ * Akshay Magam(akm152)
+ */
+
 package Song.app;
 
 public class Song{
@@ -54,11 +59,6 @@ public class Song{
 
     @Override
     public String toString() {
-        return "Song{" +
-                "name='" + name + '\'' +
-                ", artist='" + artist + '\'' +
-                ", album='" + album + '\'' +
-                ", year='" + year + "'" +
-                '}';
+        return "\""+name + "\" by " + artist;
     }
 }
