@@ -30,7 +30,7 @@ public class FileConvert {
         ArrayList<Song> libList = new ArrayList<Song>();
         try{
             while((line = bufferedReader.readLine()) != null) {
-                String entryProperties[] = line.split(",");
+                String entryProperties[] = line.split("\\|");
 
                 if(entryProperties.length == 4) {
                     String year = entryProperties[3].substring(2);
@@ -62,7 +62,7 @@ public class FileConvert {
     static void save(ArrayList<Song> libList, File songLibrary) {
         String newLib = "";
         for(Song entry:libList) {
-            newLib = newLib + entry.getName() + "," + entry.getArtist() + "," + entry.getAlbum() + ",##" + entry.getYear() + "\n";
+            newLib = newLib + entry.getName() + "|" + entry.getArtist() + "|" + entry.getAlbum() + "|##" + entry.getYear() + "\n";
         }
 
         try {

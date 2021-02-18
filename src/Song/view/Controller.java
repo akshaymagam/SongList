@@ -109,7 +109,7 @@ public class Controller {
         if(libList.size() == 0){
             selectedIndex = 0;
             libList.add(newEntry);
-        } else { //for comparing, you can implement ArrayList.sort, as it is an easier method to use instead of writing it all out.
+        } else {
             int ind;
             for (ind = 0; ind < libList.size(); ind++) {
                 Song curEntry = libList.get(ind);
@@ -271,10 +271,9 @@ public class Controller {
         }
     }
 
-    public void selectSong() { //need a listener for selected song to update
+    public void selectSong() {
         Song selectedSong = listView.getSelectionModel().getSelectedItem();
-        //Bug: This doesn't work when there is only one song in the library.
-
+        //Bug: This doesn't work when there is only one song in the library
         if (selectedSong != null) {
             selectedname.setText(listView.getSelectionModel().getSelectedItem().getName());
             selectedartist.setText(listView.getSelectionModel().getSelectedItem().getArtist());
