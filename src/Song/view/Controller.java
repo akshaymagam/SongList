@@ -52,20 +52,6 @@ public class Controller {
         listView.getSelectionModel().select(0);
         selectSong();
         listView.getSelectionModel().selectedIndexProperty().addListener((obs, oldVal, newVal) -> selectSong()); // temporary listener for ListView
-
-        /*
-        EventHandler<MouseEvent> eventHandler = e -> {
-            selectSong();
-            selectedIndex = listView.getSelectionModel().getSelectedIndex();
-            selectedname.setText(libList.get(selectedIndex).getName());
-            selectedartist.setText(libList.get(selectedIndex).getArtist());
-            selectedalbum.setText(libList.get(selectedIndex).getAlbum());
-            selectedyear.setText(libList.get(selectedIndex).getYear());
-        };
-         */
-
-
-//        listView.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);
     }
 
     public static boolean validYear(String str) {
@@ -104,7 +90,7 @@ public class Controller {
             newSong.setArtist(artistinput.getText());
             if(!albuminput.getText().isEmpty()) {newSong.setAlbum(albuminput.getText());}
             if(!yearinput.getText().isEmpty()) {newSong.setYear((yearinput.getText()));}
-            System.out.println(newSong);
+            //System.out.println(newSong);
             add(newSong);
         }
 
@@ -116,7 +102,7 @@ public class Controller {
     }
 
     private void add(Song newEntry) {
-        System.out.println("add");
+        //System.out.println("add");
         if (libList == null) {
             libList = new ArrayList<>();
         }
@@ -204,21 +190,25 @@ public class Controller {
         confirm.showAndWait();
 
         if(confirm.getResult() == ButtonType.OK){
-            if(!libList.isEmpty()) {
-                Song currSong = new Song(nameinput.getText(), artistinput.getText(), albuminput.getText(), yearinput.getText());
-                edit(currSong);
-            }
+            Song currSong = new Song(nameinput.getText(), artistinput.getText(), albuminput.getText(), yearinput.getText());
+            edit(currSong);
         }
     }
 
     private void edit(Song Entry) {
-        System.out.println("edit");
+        //System.out.println("edit");
+
+        if(libList.isEmpty()) {
+            //throw error
+            System.out.println("liblist is empty");
+        }
+
         for (int x = 0; x < libList.size(); x++) {
             Song curr = libList.get(x);
             if(curr.getName().compareTo(Entry.getName()) == 0 && curr.getArtist().compareTo(Entry.getArtist()) == 0) {
                 libList.get(x).setAlbum(Entry.getAlbum());
                 libList.get(x).setYear(Entry.getYear());
-                System.out.println("done edit");
+                //System.out.println("done edit");
             }
         }
 
@@ -238,6 +228,7 @@ public class Controller {
             Alert error = new Alert(AlertType.ERROR, "No songs to delete!");
             error.showAndWait();
             System.out.println("ERROR");
+            return;
         }else {
             selectedname.setText(libList.get(selectedIndex).getName());
             selectedartist.setText(libList.get(selectedIndex).getArtist());
@@ -252,13 +243,12 @@ public class Controller {
     }
 
     /**
-     * Bugs with Delete()
-     * To reproduce issue: Insert one song with name and artist. Then try to delete it. The "Selected Song" section will still include the previously
-     * deleted songs details. Now, click delete again and notice that it prompts you to delete the preivous song again. This then crashes the program with an IndexException.
+     * None selected after all songs are deleted.
+     * Once you delete the last song, you should not be able to press the delete button without getting an error.
      */
 
     private void delete() {
-        System.out.println("delete");
+        //System.out.println("delete");
         libList.remove(selectedIndex);
         listView.getItems().clear();
 
@@ -284,6 +274,7 @@ public class Controller {
 
     public void selectSong() { //need a listener for selected song to update
         Song selectedSong = listView.getSelectionModel().getSelectedItem();
+        //Bug: This doesn't work when there is only one song in the library.
 
         if (selectedSong != null) {
             selectedname.setText(listView.getSelectionModel().getSelectedItem().getName());
@@ -295,6 +286,16 @@ public class Controller {
             artistinput.setText(listView.getSelectionModel().getSelectedItem().getArtist());
             albuminput.setText(listView.getSelectionModel().getSelectedItem().getAlbum());
             yearinput.setText(listView.getSelectionModel().getSelectedItem().getYear());
+        }else{
+            selectedname.setText("(none selected)");
+            selectedartist.setText("(none selected)");
+            selectedalbum.setText("(none selected)");
+            selectedyear.setText("(none selected)");
+
+            nameinput.setText("");
+            artistinput.setText("");
+            albuminput.setText("");
+            yearinput.setText("");
         }
     }
 }
