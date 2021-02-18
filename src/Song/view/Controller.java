@@ -182,6 +182,7 @@ public class Controller {
      * Bugs with Edit():
      * (1) You shouldnt be able to enter a song in the text field and be able to edit it. The song should be selected from ListView, and then potentially edited.
      * (2) After user submits song to edit, it should be checked to see if that song already exsits in the library.
+     * (3) the "done edit" print statement is never accessed in the code.
      */
 
     public void editButtonPushed(ActionEvent event) {
