@@ -151,6 +151,7 @@ public class Controller {
                 }
             }
         }
+        //selectSong();
 
         listView.getItems().clear();
         for(Song x : libList){
@@ -164,12 +165,6 @@ public class Controller {
         }
     }
 
-    /**
-     * Bugs with Edit():
-     * (1) You shouldnt be able to enter a song in the text field and be able to edit it. The song should be selected from ListView, and then potentially edited.
-     * (2) After user submits song to edit, it should be checked to see if that song already exsits in the library.
-     * (3) the "done edit" print statement is never accessed in the code.
-     */
 
     public void editButtonPushed(ActionEvent event) {
         if(artistinput.getText().isEmpty() || nameinput.getText().isEmpty()){
@@ -198,28 +193,26 @@ public class Controller {
     private void edit(Song Entry) {
         //System.out.println("edit");
 
-        if(libList.isEmpty()) {
-            //throw error
-            System.out.println("liblist is empty");
-        }
-
         for (int x = 0; x < libList.size(); x++) {
             Song curr = libList.get(x);
-            if(curr.getName().compareTo(Entry.getName()) == 0 && curr.getArtist().compareTo(Entry.getArtist()) == 0) {
-                libList.get(x).setAlbum(Entry.getAlbum());
-                libList.get(x).setYear(Entry.getYear());
-                //System.out.println("done edit");
+            if(Entry.getName().compareToIgnoreCase(curr.getName()) ==0 && selectedname.getText().compareToIgnoreCase(Entry.getName()) != 0) {
+                Alert invalid = new Alert(AlertType.ERROR);
+                invalid.setContentText("This action cannot be done. This song already exists.");
+                invalid.showAndWait();
+                return;
             }
         }
 
-        listView.getItems().clear();
+        delete();
+        add(Entry);
+
+        /* listView.getItems().clear();
         for(Song x : libList){
             listView.getItems().add(x);
         }
-
         if(songLibrary != null) {
             FileConvert.save(libList, songLibrary);
-        }
+        }*/
     }
 
     public void deleteButtonPushed(ActionEvent event) {
@@ -227,7 +220,7 @@ public class Controller {
         if(selectedIndex < 0){
             Alert error = new Alert(AlertType.ERROR, "No songs to delete!");
             error.showAndWait();
-            System.out.println("ERROR");
+            //System.out.println("ERROR");
             return;
         }else {
             selectedname.setText(libList.get(selectedIndex).getName());
