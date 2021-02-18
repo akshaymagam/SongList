@@ -1,13 +1,14 @@
+/*
+ * Kruti Shah(ks1511)
+ * Akshay Magam(akm152)
+ */
+
 package Song.app;
-
-
 import javafx.application.Application;
 import Song.view.Controller;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 public class SongLib extends Application {
@@ -25,13 +26,10 @@ public class SongLib extends Application {
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
-
-
     }
 
     public static void main(String[] args) {
         launch(args);
-
     }
 
 }

@@ -1,3 +1,8 @@
+/*
+* Kruti Shah(ks1511)
+* Akshay Magam(akm152)
+*/
+
 package Song.view;
 
 import Song.app.Song;
@@ -7,18 +12,10 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import javafx.scene.input.MouseEvent;
-import javafx.event.EventHandler;
-
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
-
 
 public class Controller {
     //add editable objects
@@ -65,12 +62,19 @@ public class Controller {
         }
     }
 
-    public void addButtonPushed(ActionEvent event){
-
-        if(artistinput.getText().isEmpty() || nameinput.getText().isEmpty()){
+    public static boolean validNameArtist(String name, String artist){
+        if(artist.isEmpty() || name.isEmpty()){
             Alert artistorname = new Alert(AlertType.ERROR);
             artistorname.setContentText("Please enter a name and/or artist.");
             artistorname.showAndWait();
+            return false;
+        }
+        return true;
+    }
+
+    public void addButtonPushed(ActionEvent event){
+
+        if(!validNameArtist(artistinput.getText(), nameinput.getText())){
             return;
         }
 
@@ -93,17 +97,9 @@ public class Controller {
             //System.out.println(newSong);
             add(newSong);
         }
-
-        /*nameinput.clear();
-        artistinput.clear();
-        albuminput.clear();
-        yearinput.clear();
-         */
-
     }
 
     private void add(Song newEntry) {
-        //System.out.println("add");
         if (libList == null) {
             libList = new ArrayList<>();
         }
@@ -168,10 +164,7 @@ public class Controller {
 
 
     public void editButtonPushed(ActionEvent event) {
-        if(artistinput.getText().isEmpty() || nameinput.getText().isEmpty()){
-            Alert artistorname = new Alert(AlertType.ERROR);
-            artistorname.setContentText("Please enter a name and/or artist.");
-            artistorname.showAndWait();
+        if(!validNameArtist(artistinput.getText(), nameinput.getText())){
             return;
         }
 
@@ -192,8 +185,6 @@ public class Controller {
     }
 
     private void edit(Song Entry) {
-        //System.out.println("edit");
-
         for (int x = 0; x < libList.size(); x++) {
             Song curr = libList.get(x);
             if(Entry.getName().compareToIgnoreCase(curr.getName()) ==0 && Entry.getArtist().compareToIgnoreCase(curr.getArtist()) == 0) {
@@ -212,14 +203,6 @@ public class Controller {
         selectedIndex = listView.getSelectionModel().getSelectedIndex();
         delete();
         add(Entry);
-
-        /* listView.getItems().clear();
-        for(Song x : libList){
-            listView.getItems().add(x);
-        }
-        if(songLibrary != null) {
-            FileConvert.save(libList, songLibrary);
-        }*/
     }
 
     public void deleteButtonPushed(ActionEvent event) {
@@ -227,7 +210,6 @@ public class Controller {
         if(selectedIndex < 0){
             Alert error = new Alert(AlertType.ERROR, "No songs to delete!");
             error.showAndWait();
-            //System.out.println("ERROR");
             return;
         }else {
             selectedname.setText(libList.get(selectedIndex).getName());
@@ -242,13 +224,8 @@ public class Controller {
         }
     }
 
-    /**
-     * None selected after all songs are deleted.
-     * Once you delete the last song, you should not be able to press the delete button without getting an error.
-     */
 
     private void delete() {
-        //System.out.println("delete");
         libList.remove(selectedIndex);
         listView.getItems().clear();
 
@@ -274,7 +251,6 @@ public class Controller {
 
     public void selectSong() {
         Song selectedSong = listView.getSelectionModel().getSelectedItem();
-        //System.out.println(selectedSong);
         if (selectedSong != null) {
             selectedname.setText(listView.getSelectionModel().getSelectedItem().getName());
             selectedartist.setText(listView.getSelectionModel().getSelectedItem().getArtist());
