@@ -94,10 +94,11 @@ public class Controller {
             add(newSong);
         }
 
-        nameinput.clear();
+        /*nameinput.clear();
         artistinput.clear();
         albuminput.clear();
         yearinput.clear();
+         */
 
     }
 
@@ -151,7 +152,7 @@ public class Controller {
                 }
             }
         }
-        //selectSong();
+        selectSong();
 
         listView.getItems().clear();
         for(Song x : libList){
@@ -273,14 +274,14 @@ public class Controller {
 
     public void selectSong() {
         Song selectedSong = listView.getSelectionModel().getSelectedItem();
-        //Bug: This doesn't work when there is only one song in the library
+        //System.out.println(selectedSong);
         if (selectedSong != null) {
             selectedname.setText(listView.getSelectionModel().getSelectedItem().getName());
             selectedartist.setText(listView.getSelectionModel().getSelectedItem().getArtist());
             selectedalbum.setText(listView.getSelectionModel().getSelectedItem().getAlbum());
             selectedyear.setText(listView.getSelectionModel().getSelectedItem().getYear());
 
-            nameinput.setText(listView.getSelectionModel().getSelectedItem().getName());
+            nameinput.setText(selectedname.getText());
             artistinput.setText(listView.getSelectionModel().getSelectedItem().getArtist());
             albuminput.setText(listView.getSelectionModel().getSelectedItem().getAlbum());
             yearinput.setText(listView.getSelectionModel().getSelectedItem().getYear());
