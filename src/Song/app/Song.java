@@ -59,6 +59,6 @@ public class Song{
 
     @Override
     public String toString() {
-        return "\""+name + "\" by " + artist;
+        return "\""+name+"\" - " + artist;
     }
 }

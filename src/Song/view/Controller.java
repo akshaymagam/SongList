@@ -90,10 +90,10 @@ public class Controller {
 
         if(confirm.getResult() == ButtonType.OK){
             Song newSong = new Song();
-            newSong.setName(nameinput.getText());
-            newSong.setArtist(artistinput.getText());
-            if(!albuminput.getText().isEmpty()) {newSong.setAlbum(albuminput.getText());}
-            if(!yearinput.getText().isEmpty()) {newSong.setYear((yearinput.getText()));}
+            newSong.setName(nameinput.getText().trim());
+            newSong.setArtist(artistinput.getText().trim());
+            if(!albuminput.getText().isEmpty()) {newSong.setAlbum(albuminput.getText().trim());}
+            if(!yearinput.getText().isEmpty()) {newSong.setYear((yearinput.getText().trim()));}
             //System.out.println(newSong);
             add(newSong);
         }
@@ -175,22 +175,37 @@ public class Controller {
             return;
         }
 
-        Alert confirm = new Alert(AlertType.CONFIRMATION, "Edit " + listView.getSelectionModel().getSelectedItem().getName() + " by " + listView.getSelectionModel().getSelectedItem().getArtist() + "?", ButtonType.OK, ButtonType.CANCEL);
-        confirm.showAndWait();
+        Song currSong = new Song(nameinput.getText().trim(), artistinput.getText().trim(), albuminput.getText().trim(), yearinput.getText().trim());
+        edit(currSong);
 
-        if(confirm.getResult() == ButtonType.OK){
-            Song currSong = new Song(nameinput.getText(), artistinput.getText(), albuminput.getText(), yearinput.getText());
-            edit(currSong);
-        }
     }
 
     private void edit(Song Entry) {
         for (int x = 0; x < libList.size(); x++) {
             Song curr = libList.get(x);
             if(Entry.getName().compareToIgnoreCase(curr.getName()) ==0 && Entry.getArtist().compareToIgnoreCase(curr.getArtist()) == 0) {
-                if(!Entry.getYear().isEmpty() || !Entry.getAlbum().isEmpty()){
-                    curr.setYear(Entry.getYear());
-                    curr.setAlbum(Entry.getAlbum());
+                if(selectedIndex == x){
+                    Alert confirm = new Alert(AlertType.CONFIRMATION,
+                            "Edit album/year for " + "\""+listView.getSelectionModel().getSelectedItem().getName()+"\" - "+ listView.getSelectionModel().getSelectedItem().getArtist()+ "?",
+                            ButtonType.OK, ButtonType.CANCEL);
+                    confirm.showAndWait();
+
+                    if(confirm.getResult() == ButtonType.OK){
+                        curr.setYear(Entry.getYear());
+                        curr.setAlbum(Entry.getAlbum());
+
+                        listView.getItems().clear();
+                        for(Song y : libList){
+                            listView.getItems().add(y);
+                        }
+
+                        listView.getSelectionModel().select(selectedIndex);
+                        selectSong();
+                        if(songLibrary != null) {
+                            FileConvert.save(libList, songLibrary);
+                        }
+                    }
+                    return;
                 }else {
                     Alert invalid = new Alert(AlertType.ERROR);
                     invalid.setContentText("This action cannot be done. This song already exists.");
@@ -200,9 +215,17 @@ public class Controller {
             }
         }
 
-        selectedIndex = listView.getSelectionModel().getSelectedIndex();
-        delete();
-        add(Entry);
+        //System.out.println("edit");
+        Alert confirm = new Alert(AlertType.CONFIRMATION,
+                "Edit " + "\""+listView.getSelectionModel().getSelectedItem().getName()+"\" - "+ listView.getSelectionModel().getSelectedItem().getArtist()+" to " + "\""+nameinput.getText()+"\" - "+ artistinput.getText() + "?",
+                ButtonType.OK, ButtonType.CANCEL);
+        confirm.showAndWait();
+
+        if(confirm.getResult() == ButtonType.OK){
+            selectedIndex = listView.getSelectionModel().getSelectedIndex();
+            delete();
+            add(Entry);
+        }
     }
 
     public void deleteButtonPushed(ActionEvent event) {
@@ -226,6 +249,7 @@ public class Controller {
 
 
     private void delete() {
+        //System.out.println("delete");
         libList.remove(selectedIndex);
         listView.getItems().clear();
 
