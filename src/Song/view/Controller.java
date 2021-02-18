@@ -195,14 +195,20 @@ public class Controller {
 
         for (int x = 0; x < libList.size(); x++) {
             Song curr = libList.get(x);
-            if(Entry.getName().compareToIgnoreCase(curr.getName()) ==0 && selectedname.getText().compareToIgnoreCase(Entry.getName()) != 0) {
-                Alert invalid = new Alert(AlertType.ERROR);
-                invalid.setContentText("This action cannot be done. This song already exists.");
-                invalid.showAndWait();
-                return;
+            if(Entry.getName().compareToIgnoreCase(curr.getName()) ==0 && Entry.getArtist().compareToIgnoreCase(curr.getArtist()) == 0) {
+                if(!Entry.getYear().isEmpty() || !Entry.getAlbum().isEmpty()){
+                    curr.setYear(Entry.getYear());
+                    curr.setAlbum(Entry.getAlbum());
+                }else {
+                    Alert invalid = new Alert(AlertType.ERROR);
+                    invalid.setContentText("This action cannot be done. This song already exists.");
+                    invalid.showAndWait();
+                    return;
+                }
             }
         }
 
+        selectedIndex = listView.getSelectionModel().getSelectedIndex();
         delete();
         add(Entry);
 
